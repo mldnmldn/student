@@ -1,0 +1,140 @@
+did = 1 ;
+function deleteEmpFun(eid,tid) {
+	// console.log(eid + " = " + tid) ;
+	$.post("pages/back/admin/travel/delete_emp.action",{"tid":tid,"eid":eid},function(data){
+		$("#travel-" + eid).remove() ;
+		operateAlert(data.status,"出差人员信息移除成功！","出差人员信息移除失败！") ;
+	},"json") ;
+}
+
+$(function(){
+	$("button[id^=remove-]").each(function(){
+		eid = this.id.substring(this.id.indexOf("-") + 1,this.id.lastIndexOf("-")) ;
+		tid = this.id.substring(this.id.lastIndexOf("-") + 1) ;
+		$(this).on("click",function(){
+			deleteEmpFun(eid,tid) ;
+		})
+	}) ;
+	$("#did").on("change",function(){
+		did = $(this).val() ;
+		loadEmpSchedule(did);
+		//loadData(did);
+	}) ;
+	$(addBtn).on("click",function(){
+		 $("#did option").remove();
+		 $("#empSchedule").find("tr").remove();
+		 $.post("EmpBackAction!loadDept.action",{ },function(data){
+			 $("#did").append("<option value=>====== 请选择雇员所在部门 ======</option>");
+			 for(var x=0 ;x<data.length;x++){
+				 $("#did").append("<option value='"+data[x].did+"'>" + data[x].dname + "</option>") ;
+			  }
+		 },"json");
+		// Ajax异步读取用户信息
+		// 将异步加载信息填充到模态窗口的组件之中
+		//loadData() ;
+		$("#userInfo").modal("toggle") ;	// 显示模态窗口
+	}) ;
+})
+
+function loadData(did) {	// 该函数名称一定要固定，不许修改
+	// 如果要想进行分页的处理列表前首先查询出部门编号
+	//did = $("#did").val() ;	// 取得指定组件的value
+	//tid = $("#tid").val() ;
+	// console.log("部门编号：" + did) ;
+	$.post("EmpBackAction!loadSchedule.action", {"did" : did,"cp" : jsCommonCp, "ls" : jsCommonLs}, function(data) {
+		 $("#empSchedule").find("tr").remove();
+		 for(var x=0 ;x<data.length;x++){
+				var str = "<tr id='travel-1'>" +
+						"<td class='text-center'><img src='upload/emp/"+data[x].photo+"' style='width:20px';/></td>" +
+						"<td class='text-center'>"+data[x].eid+"</td>" +
+						"<td class='text-center'>"+data[x].ename+"</td>" +
+						"<td class='text-center'>"+data[x].levelTitle+"</td>" +
+						"<td class='text-center'>"+data[x].deptTitle+"</td>" +
+						"<td class='text-center'>" +
+						"<button class='btn btn-danger btn-xs' id='remove-1'>" +
+						"<span class='glyphicon glyphicon-plus-sign'></span>&nbsp;增加</button>" +
+						"</td>" +
+						"</tr>";
+				$("#empSchedule").append($(str));
+			  }
+		  createSplitBar(5) ;	// 创建分页控制项
+	}, "json");
+}
+function addTableRow(photo,eid,ename,sal,lid) {
+	level = "普通员工" ;
+	if (lid == "manager") {
+		level = "部门经理" ;
+	} else if (lid == "chief") {
+		level = "总监" ;
+	}
+	row = 	"	<tr id='travelEmp-"+eid+"'>" + 
+			"		<td class='text-center'>" +
+			"			<img src='upload/member/"+photo+"' style='width:20px;'/> " +
+			"		</td>" +
+			"		<td class='text-center'>"+eid+"</td>" +
+			"		<td class='text-center'>"+ename+"</td>" +
+			"		<td class='text-center'>￥"+sal+"</td>" +
+			"		<td class='text-center'>"+level+"</td>" +
+			"		<td class='text-center'>" +
+			"			<button class='btn btn-danger btn-xs' id='addEmp-"+eid+"'>" +
+			"				<span class='glyphicon glyphicon-plus-sign'></span>&nbsp;增加</button>" +
+			"		</td>" + 
+			"	</tr> " ;
+	$(empTable).append(row) ;
+	$("#addEmp-" + eid).on("click",function(){
+		tid = $("#tid").val() ;
+		$.post("pages/back/admin/travel/add_emp.action",{"eid":eid,"tid":tid},function(data){
+			if (data.status == true) {	// 待出发用户添加完成
+				$("#travelEmp-" + eid).remove() ;
+				rowInfo = 	"<tr id='travel-"+eid+"'>" + 
+							"	<td class='text-center'>" +
+							"		<img src='upload/member/"+data.emp.photo+"' style='width:20px;'/> " +
+							"	</td>" +
+							"	<td class='text-center'>"+data.emp.eid+"</td>" +
+							"	<td class='text-center'>"+data.emp.ename+"</td>" +
+							"	<td class='text-center'>￥"+data.emp.sal+"</td>" +
+							"	<td class='text-center'>"+data.level.title+"</td>" +
+							"	<td class='text-center'>"+data.dept.dname+"</td>" +
+							"	<td class='text-center'>" +
+							"		<button class='btn btn-danger btn-xs' id='remove-"+data.emp.eid+"-"+tid+"'>" +
+							"			<span class='glyphicon glyphicon-remove'></span>&nbsp;移除</button>" +
+							"	</td>" +
+							"</tr> " ;
+				$("#travelEmpTable").append(rowInfo) ;
+				$("#remove-"+data.emp.eid+"-"+tid).on("click",function(){
+					deleteEmpFun(eid,tid) ;
+				}) ;
+			} else {
+				$("#userInfo").modal("toggle") ;
+				operateAlert(false,"","该雇员已经有了项目安排无法添加到本次出差人员之内！") ;
+			}
+		},"json") ;
+	}) ;
+}
+
+function loadEmpSchedule(did){
+	  $("#empSchedule").find("tr").remove();
+	  $.post("EmpBackAction!loadSchedule.action",{"did":did,"cp":jsCommonCp,"ls":jsCommonLs},function(data){
+		  $("#empSchedule").find("tr").remove();
+		  for(var x=0 ;x<data.length;x++){
+			var str = "<tr id='travel-1'>" +
+					"<td class='text-center'><img src='upload/emp/"+data[x].photo+"' style='width:20px';/></td>" +
+					"<td class='text-center'>"+data[x].eid+"</td>" +
+					"<td class='text-center'>"+data[x].ename+"</td>" +
+					"<td class='text-center'>"+data[x].levelTitle+"</td>" +
+					"<td class='text-center'>"+data[x].deptTitle+"</td>" +
+					"<td class='text-center'>" +
+					"<button class='btn btn-danger btn-xs' id='remove-"+data[x].eid+"'>" +
+					"<span class='glyphicon glyphicon-plus-sign'></span>&nbsp;增加</button>" +
+					"</td>" +
+					"</tr>";
+			$("#empSchedule").append($(str));
+			 $("#remove-" + data[x].eid).on("click",function() {
+			       var eid = this.id.split("-")[1];
+			       alert(eid);
+			    }) ;
+			 $("#splitSchedule").append(createSplitBar(20));
+		  }
+	    },"json") ;
+}
+

@@ -1,0 +1,55 @@
+package cn.mldn.eusplatform.admin.schedule;
+
+import java.util.HashSet;
+import java.util.Set;
+
+import cn.mldn.eusplatform.service.back.IScheduleServiceBack;
+import cn.mldn.util.action.ActionResourceUtil;
+import cn.mldn.util.factory.Factory;
+import cn.mldn.util.web.ModelAndView;
+import cn.mldn.util.web.SplitPageUtil;
+
+public class ScheduleAction {
+	public ModelAndView list(){
+		ModelAndView mav = new ModelAndView(ActionResourceUtil.getPage("audit.list"));
+		SplitPageUtil spu = new SplitPageUtil("审核标题:title", "back.admin.audit.list.action");
+		IScheduleServiceBack is = Factory.getServiceInstance("schedule.service.back");
+		Set<Integer> set = new HashSet<>();
+		set.add(0);
+		set.add(1);
+		set.add(2);
+		set.add(4);
+		
+		try {
+			mav.addObjectMap(
+					is.listByAudit(spu.getColumn(), spu.getKeyWord(), spu.getCurrentPage(), spu.getLineSize(),set));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return mav;
+	}
+	public ModelAndView check(){
+		ModelAndView mav = new ModelAndView(ActionResourceUtil.getPage("audit.propare"));
+		SplitPageUtil spu = new SplitPageUtil("审核标题:title", "back.admin.audit.check.action");
+		IScheduleServiceBack is = Factory.getServiceInstance("schedule.service.back");
+		Set<Integer> set = new HashSet<>();
+		set.add(3);
+		try {
+			mav.addObjectMap(
+					is.listByAudit(spu.getColumn(), spu.getKeyWord(), spu.getCurrentPage(), spu.getLineSize(),set));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return mav;
+	}
+	public ModelAndView apply(String sid){
+		ModelAndView mav = new ModelAndView(ActionResourceUtil.getPage("audis.apply"));
+		IScheduleServiceBack is = Factory.getServiceInstance("schedule.service.back");
+		try {
+			mav.addObjectMap(is.get(Long.parseLong(sid)));
+		} catch (Exception e) {
+			e.printStackTrace();
+		} 
+		return mav;
+	}
+}

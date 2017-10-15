@@ -1,0 +1,54 @@
+package cn.mldn.eusplatform.dao;
+
+import java.sql.SQLException;
+import java.util.List;
+import java.util.Set;
+
+import cn.mldn.eusplatform.vo.Schedule;
+import cn.mldn.util.dao.IBaseDAO;
+
+public interface IScheduleDAO extends IBaseDAO<Long, Schedule> {
+	/**
+	 * 根据审核标记列出所有的调度安排
+	 * @param ids 审核标记id，以set集合保存
+	 * @return 调度安排集合
+	 * @throws SQLException SQL
+	 */
+	public List<Schedule> findAllByAudit(Set<Integer> ids) throws SQLException ;
+	/**
+	 * 根据审核标记列出所有的调度安排并分页
+	 * @param currentPage 当前页
+	 * @param lineSize 每页的行数
+	 * @param ids 审核标记id，以set集合保存
+	 * @return 调度安排集合
+	 * @throws SQLException SQL
+	 */
+	public List<Schedule> findAllByAudit(Long currentPage, Integer lineSize,Set<Integer> ids) throws SQLException ;
+	/**
+	 * 根据审核标记列出所有的调度安排并模糊分页
+	 * @param column 模糊查询的列
+	 * @param keyWord 模糊查询的关键字
+	 * @param currentPage 当前页
+	 * @param lineSize 每页的行数
+	 * @param ids 审核标记id，以set集合保存
+	 * @return 调度安排集合
+	 * @throws SQLException SQL
+	 */
+	public List<Schedule> findSplitByAudit(String column, String keyWord, Long currentPage, Integer lineSize,Set<Integer> ids) throws SQLException ;
+	/**
+	 * 根据审核标记取得该标记下的所有记录数
+	 * @param ids 审核标记id，以set集合保存
+	 * @return 记录数
+	 * @throws Exception SQL
+	 */
+	public Long getAllCount(Set<Integer> ids) throws Exception ;
+	/**
+	 * 根据审核标记和模糊查询取得所有记录数
+	 * @param column 模糊查询的行
+	 * @param keyWord 模糊查询的关键字
+	 * @param ids 审核标记id，以set集合保存
+	 * @return 记录数
+	 * @throws Exception SQL
+	 */
+	public Long getSplitCount(String column,String keyWord,Set<Integer> ids) throws Exception ;
+}

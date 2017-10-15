@@ -1,0 +1,3 @@
+emp.dao=cn.mldn.eusplatform.dao.impl.EmpDAOImpl
+role.dao=cn.mldn.eusplatform.dao.impl.RoleDAOImpl
+action.dao=cn.mldn.eusplatform.dao.impl.ActionDAOImpl

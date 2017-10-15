@@ -1,0 +1,51 @@
+
+$(function() {
+		$("span[id^=sp-]").each(function(){
+			audit = parseInt(this.id.split("-")[1]);
+			sid = parseInt(this.id.split("-")[2])
+			auditUtil(audit,sid);
+		});
+	$("button[id^=removeBtn-]").on("click",function(){
+		var r=confirm("确定要删除吗？");
+		if(r==true){
+			sid = this.id.split("-")[1];
+			$.post("pages/back/admin/schedule/ScheduleAddAction!deleteSchedule.action",{sid:sid},function(data){
+				
+				operateAlert(true,"删除成功","") ;
+				setTimeout(function(){
+					location.reload();},800);
+			});
+		}else{
+			operateAlert(false,"删除成功","删除失败") ;
+		}
+		
+	});
+	$("button[id^=submit-]").on("click",function(){
+		var r=confirm("确定要提交申请吗？");
+		if(r==true){
+			sid = this.id.split("-")[1];
+			$.post("pages/back/admin/schedule/ScheduleAddAction!submit.action",{sid:sid},function(data){
+				setTimeout(function(){
+					location.reload();},800);
+			
+			});
+			
+			
+		}else{
+			operateAlert(false,"操作成功","操作取消");
+		}
+		
+	});
+	$("button[id^=editBtn-]").on("click",function(){
+		var r=confirm("Press a button");
+		if(r==true){
+			sid = this.id.split("-")[1];
+		}else{
+			document.write("You pressed Cancel!");
+		}
+		
+		
+	});
+	
+})
+

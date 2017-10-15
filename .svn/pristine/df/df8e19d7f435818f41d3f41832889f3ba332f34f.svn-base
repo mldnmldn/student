@@ -1,0 +1,11 @@
+package cn.mldn.eusplatform.dao;
+
+import java.sql.SQLException;
+import java.util.List;
+
+import cn.mldn.eusplatform.vo.Report;
+import cn.mldn.util.dao.IBaseDAO;
+
+public interface IReportDAO extends IBaseDAO<Long,Report> {
+	public List<Report> findAllBySid(Long sid,String eid) throws SQLException;
+}

@@ -1,0 +1,129 @@
+package cn.mldn.eusplatform.service.back.impl;
+
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import cn.mldn.eusplatform.dao.IActionDAO;
+import cn.mldn.eusplatform.dao.IDeptDAO;
+import cn.mldn.eusplatform.dao.IEmpDAO;
+import cn.mldn.eusplatform.dao.ILevelDAO;
+import cn.mldn.eusplatform.dao.IRoleDAO;
+import cn.mldn.eusplatform.service.back.IEmpServiceBack;
+import cn.mldn.eusplatform.vo.Emp;
+import cn.mldn.eusplatform.vo.Level;
+import cn.mldn.util.factory.Factory;
+import cn.mldn.util.service.abs.AbstractService;
+import cn.mldn.util.web.ServletObjectUtil;
+
+public class EmpServiceBackImpl extends AbstractService implements IEmpServiceBack {
+
+	@Override
+	public Map<String, Object> login(Emp emp) throws Exception {
+		Map<String, Object> result = new HashMap<String, Object>() ;
+		IEmpDAO empDAO = Factory.getDAOInstance("emp.dao") ;
+		Emp selectEmp = empDAO.findById(emp.getEid()) ;	
+		result.put("emp", selectEmp) ;	
+		if (selectEmp != null) {
+			IRoleDAO roleDAO = Factory.getDAOInstance("role.dao") ;	
+			IActionDAO actionDAO = Factory.getDAOInstance("action.dao") ;	
+			result.put("allRoles", roleDAO.findAllByDept(selectEmp.getDid())) ;
+			result.put("allActions", actionDAO.findAllByDept(selectEmp.getDid())) ;
+		}
+		return result ;
+	}
+
+	@Override
+	public boolean add(Emp vo) throws Exception {
+		
+		IEmpDAO empDAO = Factory.getDAOInstance("emp.dao") ;
+		ILevelDAO levelDAO = Factory.getDAOInstance("level.dao") ;
+		//IRoleDAO roleDAO = Factory.getDAOInstance("role.dao") ;
+		//IActionDAO actionDAO = Factory.getDAOInstance("action.dao") ;
+		String ineid = (String) ServletObjectUtil.getRequest().getSession().getAttribute("eid");
+		vo.setIneid(ineid);
+		vo.setHiredate(new Date());
+		Level level= levelDAO.findById(vo.getLid());
+		System.out.println(level.toString());
+		if(empDAO.findById(ineid).getDid() == 2) {
+			if(level !=null) {
+				if(level.getLosal()<vo.getSalary() && vo.getSalary()<level.getHisal()) {
+					if(level.getLid() == 2) {
+						if(empDAO.doUpdateByManager(vo.getDid(), 2l)) {
+							return empDAO.doCreate(vo);
+						}
+						return false;
+					}else {
+						return empDAO.doCreate(vo);
+					}
+				}
+			}
+		}
+		return false;
+	}
+
+	@Override
+	public boolean checkEid(String eid) throws Exception {
+		// TODO Auto-generated method stub
+		IEmpDAO empDAO = Factory.getDAOInstance("emp.dao") ;
+		return empDAO.findByEidIsExist(eid) == null;
+	}
+
+	@Override
+	public Map<String, Object> addPre() throws Exception {
+		// TODO Auto-generated method stub
+		IDeptDAO deptDAO = Factory.getDAOInstance("dept.dao") ;
+		ILevelDAO levelDAO = Factory.getDAOInstance("level.dao") ;
+		Map<String,Object> map = new HashMap<String,Object>();
+		map.put("allDepts", deptDAO.findAll());
+		map.put("allLevel", levelDAO.findAll());
+		return map;
+	}
+
+	@Override
+	public Map<String, Object> list(String column, String keyWord, Long currentPage, Integer lineSize)
+			throws Exception {
+		// TODO Auto-generated method stub
+		Map<String,Object> map = new HashMap<String,Object>();
+		IEmpDAO empDAO = Factory.getDAOInstance("emp.dao") ;
+		IDeptDAO deptDAO = Factory.getDAOInstance("dept.dao") ;
+		ILevelDAO levelDAO = Factory.getDAOInstance("level.dao") ;
+		if(super.isLikeSearch(column) || super.isLikeSearch(keyWord)) {
+			map.put("allEmps", empDAO.findSplit(column, keyWord, currentPage, lineSize));
+			map.put("allRecorders", empDAO.getSplitCount(column, keyWord));
+		}else {
+			map.put("allEmps", empDAO.findAll(currentPage, lineSize));
+			map.put("allRecorders", empDAO.getAllCount());
+		}
+		map.put("allDepts", deptDAO.findAllMap());
+		map.put("allLevels", levelDAO.findAllLevel());
+		return map;
+	}
+
+	@Override
+	public Map<String, Object> editPre(String eid) throws Exception {
+		IDeptDAO deptDAO = Factory.getDAOInstance("dept.dao") ;
+		ILevelDAO levelDAO = Factory.getDAOInstance("level.dao") ;
+		IEmpDAO empDAO = Factory.getDAOInstance("emp.dao") ;
+		Map<String,Object> map = new HashMap<String,Object>();
+		map.put("allDepts", deptDAO.findAll());
+		map.put("allLevel", levelDAO.findAll());
+		map.put("emp", empDAO.findById(eid));
+		map.put("allDeptMap", deptDAO.findAllMap());
+		map.put("allLevelMap", levelDAO.findAllLevel());
+		return map;
+	}
+
+	@Override
+	public boolean edit(Emp vo) throws Exception {
+		IEmpDAO empDAO = Factory.getDAOInstance("emp.dao") ;
+		String ineid = (String) ServletObjectUtil.getRequest().getSession().getAttribute("eid");
+		Emp emp = empDAO.findById(ineid);
+		if(ineid != emp.getIneid()) {
+			vo.setIneid(ineid);
+		}
+		vo.setHiredate(new Date());
+		System.out.println(vo.toString());
+		return empDAO.doEdit(vo);
+	}
+
+}

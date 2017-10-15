@@ -1,0 +1,56 @@
+
+$(function() {
+		$("span[id^=sp-]").each(function(){
+			audit = parseInt(this.id.split("-")[1]);
+			sid = parseInt(this.id.split("-")[2])
+			auditUtil(audit,sid);
+		});
+	$("button[id^=removeBtn-]").on("click",function(){
+		var r=confirm("Press a button");
+		if(r==true){
+			sid = this.id.split("-")[1];
+			$.post("pages/back/admin/schedule/ScheduleAddAction!deleteSchedule.action",{sid:sid},function(data){
+				if(data.trim() == true){
+					alert("删除成功");
+				}else{
+					alert("删除失败");
+				}
+				
+			});
+			location.reload();
+		}else{
+			location.reload();
+		}
+		
+	});
+	$("button[id^=submit-]").on("click",function(){
+		var r=confirm("Press a button");
+		if(r==true){
+			sid = this.id.split("-")[1];
+			$.post("pages/back/admin/schedule/ScheduleAddAction!submit.action",{sid:sid},function(data){
+				if(data.trim() == true){
+					alert("删除成功");
+				}else{
+					
+				}
+				
+			});
+			location.reload();
+		}else{
+			document.write("You pressed Cancel!");
+		}
+		
+	});
+	$("button[id^=editBtn-]").on("click",function(){
+		var r=confirm("Press a button");
+		if(r==true){
+			sid = this.id.split("-")[1];
+		}else{
+			document.write("You pressed Cancel!");
+		}
+		
+		
+	});
+	
+})
+

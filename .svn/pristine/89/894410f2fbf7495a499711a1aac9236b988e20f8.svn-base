@@ -1,0 +1,27 @@
+package cn.mldn.eusplatform.service.back.impl;
+
+import java.util.Date;
+
+import cn.mldn.eusplatform.dao.IReportDAO;
+import cn.mldn.eusplatform.dao.IScheduleDAO;
+import cn.mldn.eusplatform.service.back.IReportServiceBack;
+import cn.mldn.eusplatform.vo.Report;
+import cn.mldn.util.factory.Factory;
+import cn.mldn.util.service.abs.AbstractService;
+import cn.mldn.util.web.ServletObjectUtil;
+
+public class ReportServiceBackImpl extends AbstractService implements IReportServiceBack {
+
+	@Override
+	public boolean add(Report vo) throws Exception {
+		IReportDAO reportDAO = Factory.getDAOInstance("report.dao") ;
+		IScheduleDAO scheduleDAO = Factory.getDAOInstance("schedule.dao");
+		vo.setEid((String)ServletObjectUtil.getRequest().getSession().getAttribute("eid"));
+		vo.setSubdate(new Date());
+		if(reportDAO.doCreate(vo)) {
+			return scheduleDAO.editAuditBySid(vo.getSid()) ;
+		}
+		return false;
+	}
+	
+}

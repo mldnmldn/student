@@ -1,0 +1,6 @@
+
+emp.service.back=cn.mldn.eusplatform.service.back.impl.EmpServiceBackImpl
+item.service.back=cn.mldn.eusplatform.service.back.impl.ItemSerivceBackImpl
+emp.service.back=cn.mldn.eusplatform.service.back.impl.EmpServiceBackImpl
+emp.service.back=cn.mldn.eusplatform.service.back.impl.EmpServiceBackImpl
+schedule.service.back=cn.mldn.eusplatform.service.back.impl.SchedulleServiceBackimp

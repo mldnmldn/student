@@ -1,0 +1,53 @@
+package cn.mldn.eusplatform.web.action;
+
+import java.util.Map;
+
+import cn.mldn.eusplatform.service.back.IEmpServiceBack;
+import cn.mldn.eusplatform.vo.Emp;
+import cn.mldn.util.action.ActionResourceUtil;
+import cn.mldn.util.action.abs.AbstractAction;
+import cn.mldn.util.factory.Factory;
+import cn.mldn.util.web.ModelAndView;
+import cn.mldn.util.web.ServletObjectUtil;
+
+public class EmpBackAction extends AbstractAction {
+
+	public static final String ACTION_TITLE = "雇员" ;
+	
+	public ModelAndView addPre() {
+		ModelAndView mav = new ModelAndView(ActionResourceUtil.getPage("emp.addPre.page"));
+		IEmpServiceBack empService = Factory.getServiceInstance("emp.service.back");
+		try {
+			Map<String,Object> map = empService.addPre();
+			mav.addObjectMap(map);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return mav;
+	}
+	
+	public ModelAndView add(Emp vo) {
+		ModelAndView mav = new ModelAndView(ActionResourceUtil.getPage("emp.addPre.page"));
+		if(ServletObjectUtil.getParam().isUpload("pic")) {
+			String fileName = ServletObjectUtil.getParam().createUploadFileName("pic").get(0);
+			vo.setPhoto(fileName);
+		}else {
+			vo.setPhoto("nophoto.jpg"); 
+		}
+		IEmpServiceBack empService = Factory.getServiceInstance("emp.service.back");
+		try {
+			if(empService.add(vo)) {
+				super.setUrlAndMsg(mav, "emp.add.action", "vo.add.success",ACTION_TITLE );
+				if(ServletObjectUtil.getParam().isUpload("pic")) {
+					String filePath = ServletObjectUtil.getRequest().getServletContext().getRealPath("/upload/emp/") + vo.getPhoto() ;
+					ServletObjectUtil.getParam().saveUploadFile("pic", filePath);
+				}
+			}else {
+				super.setUrlAndMsg(mav, "emp.add.action", "vo.add.failure",ACTION_TITLE );
+			}
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+		return mav;
+	}
+}

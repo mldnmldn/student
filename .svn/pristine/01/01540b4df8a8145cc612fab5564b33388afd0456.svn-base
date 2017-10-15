@@ -1,0 +1,55 @@
+package cn.mldn.eusplatform.web.action;
+
+import java.sql.SQLException;
+import java.util.Date;
+import java.util.List;
+
+import cn.mldn.eusplatform.service.back.IItemServiceBack;
+import cn.mldn.eusplatform.service.back.IScheduleServiceBack;
+import cn.mldn.eusplatform.vo.Item;
+import cn.mldn.eusplatform.vo.Schedule;
+import cn.mldn.util.action.ActionResourceUtil;
+import cn.mldn.util.action.abs.AbstractAction;
+import cn.mldn.util.factory.Factory;
+import cn.mldn.util.web.ModelAndView;
+
+public class ScheduleAddAction extends AbstractAction{
+	
+	/**
+	 * 进行Item的罗列
+	 * @return
+	 */
+	public ModelAndView ListItem() {
+		ModelAndView mav = new ModelAndView(ActionResourceUtil.getPage("front.orders.addpre.page")) ;
+		IItemServiceBack service = Factory.getServiceInstance("item.service.back");
+		try {
+			List<Item> allItems = service.list();
+			mav.addObject("allItems", allItems);
+			return mav;
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return mav;
+	}
+	public ModelAndView AddSchedule(Schedule vo) {
+		ModelAndView mav = new ModelAndView(ActionResourceUtil.getPage("front.orders.addpre.page")) ;
+		vo.setSubdate(new Date());
+		IScheduleServiceBack service = Factory.getServiceInstance("schedule.service.back");
+		String msg = "添加失败";
+		boolean flag;
+		try {
+			flag = service.add(vo);
+			if(flag) {
+				msg = "添加成功";
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		mav.addObject("msg", msg);
+		this.ListItem();
+		return mav;
+		
+	}
+	
+}

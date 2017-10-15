@@ -1,0 +1,22 @@
+package cn.mldn.eusplatform.admin.schedule;
+
+import cn.mldn.eusplatform.service.back.IScheduleServiceBack;
+import cn.mldn.util.action.ActionResourceUtil;
+import cn.mldn.util.factory.Factory;
+import cn.mldn.util.web.ModelAndView;
+import cn.mldn.util.web.SplitPageUtil;
+
+public class ScheduleAction {
+	public ModelAndView list(){
+		ModelAndView mav = new ModelAndView(ActionResourceUtil.getPage("back.admin.schecule.page"));
+		SplitPageUtil spu = new SplitPageUtil("审核类型:title", "back.admin.schecule.action");
+		IScheduleServiceBack is = Factory.getServiceInstance("schedule.service.back");
+		try {
+			mav.addObjectMap(
+					is.list(spu.getColumn(), spu.getKeyWord(), spu.getCurrentPage(), spu.getLineSize()));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return mav;
+	}
+}

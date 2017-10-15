@@ -1,0 +1,3 @@
+# /pages/back/admin/emp/EmpAction!add=mid:string|empno:long|ename:string|sal:double|hiredate:date|age:int|inst:string[]|actid:long[]
+/LoginAction!login=eid:string|password:string|code:rand
+/LoginAction!check=code:string|

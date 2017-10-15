@@ -1,0 +1,20 @@
+$(function(){
+	$("span[id^=sp]").each(function(){
+		temp = this.id.split("-") ;
+		auditUtil(parseInt(temp[1]),parseInt(temp[2])) ;
+	}) ;
+	$("button[id^=btn]").each(function(){
+		temp = this.id.split("-") ;
+		if(temp[1] == 4){
+			$(this).html("<span class='fa fa-pencil-square-o'></span>&nbsp;任务报告") ;
+			$(this).on("click",function(){
+				window.location = "pages/back/admin/center/emp_schedule_report.jsp?sid=" + temp[2] ;
+			}) ;
+		}else{
+			$(this).html("<span class='glyphicon glyphicon-th'></span>&nbsp;任务详情") ;
+			$(this).on("click",function(){
+				
+			}) ;
+		}
+	})
+})

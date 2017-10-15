@@ -1,0 +1,26 @@
+package cn.mldn.eusplatform.isutil;
+
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+import cn.mldn.eusplatform.vo.Report;
+
+public class ReportUtil {
+	public static Map<String,Integer> isReportNote(List<Report> report){
+		Map<String,Integer> map = new HashMap<>();
+		Iterator<Report> it = report.iterator();
+		int noReport = 0;
+		int Report = 0;
+		while(it.hasNext()){
+			Report vo = it.next();
+			if(vo.getNote() == null || "".equals(vo.getNote())){
+				map.put("NoReport",++ noReport);
+			}else{
+				map.put("Report",++ Report);
+			}
+		}
+		return map;
+	}
+}	

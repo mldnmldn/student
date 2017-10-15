@@ -1,0 +1,23 @@
+# \u5b9a\u4e49\u5168\u5c40\u7684\u8df3\u8f6c\u8def\u5f84\u6620\u5c04
+forward.page=/pages/plugins/back/back_forward.jsp
+error.page=/pages/plugins/back/back_error.jsp
+
+# \u5b9a\u4e49\u9a8c\u8bc1\u9519\u8bef\u9875
+#/pages/back/admin/emp/EmpAction!add.errorPage=/pages/back/admin/emp/EmpAction!addPre.action
+#/pages/back/admin/emp/EmpAction!edit.errorPage=/pages/back/admin/emp/EmpAction!list.action
+/LoginAction!login.errorPage=/login.jsp
+
+
+# \u5b9a\u4e49\u5355\u4e2aAction\u7684\u8df3\u8f6c\u8def\u5f84\u6620\u5c04
+back.index.page=/pages/back/index.jsp
+login.page=/login.jsp
+
+# \u5b9a\u4e49\u90e8\u95e8\u7684Action\u7684\u8df3\u8f6c\u8def\u5f84\u6620\u5c04
+dept.list=/pages/back/admin/dept/dept_list.jsp
+back.admin.schecule.page=/pages/back/admin/audit/audit_schedule_list.jsp
+back.admin.schecule.action=/pages/back/admin/schedele/ScheduleActionFront!list.action
+
+back.admin.schecule.page=/pages/back/admin/audit/audit_schedule_list.jsp
+back.admin.schecule.action=/pages/back/admin/schedele/ScheduleActionFront!list.action
+
+front.orders.addpre.page=/pages/back/admin/schedule/schedule_add.jsp

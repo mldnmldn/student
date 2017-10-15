@@ -1,0 +1,4 @@
+/LoginAction=cn.mldn.eusplatform.web.action.LoginAction
+/pages/back/admin/dept/DeptAction=cn.mldn.eusplatform.web.action.DeptAction
+/pages/back/admin/schedule/ScheduleAddAction=cn.mldn.eusplatform.web.action.ScheduleAddAction
+/pages/back/admin/schedele/ScheduleActionFront=cn.mldn.eusplatform.admin.schedule.ScheduleAction

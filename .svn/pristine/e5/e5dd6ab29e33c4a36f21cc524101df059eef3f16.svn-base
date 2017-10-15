@@ -1,0 +1,16 @@
+package cn.mldn.eusplatform.dao;
+
+import java.util.Set;
+
+import cn.mldn.eusplatform.vo.ScheduleEmp;
+import cn.mldn.util.dao.IBaseDAO;
+
+public interface IScheduleEmpDAO extends IBaseDAO<Long,ScheduleEmp> {
+	/**
+	 * 根据eid取得sid，以Set集合保存
+	 * @param eid 雇员编号
+	 * @return 全部的调度编号以Set集合保存
+	 * @throws Exception JDBC
+	 */
+	public Set<Long> findSidByEid(String eid) throws Exception ;
+}
